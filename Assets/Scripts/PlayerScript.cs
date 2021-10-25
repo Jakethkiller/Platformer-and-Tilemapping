@@ -10,14 +10,26 @@ public class PlayerScript : MonoBehaviour
     public float speed;
 
     public Text score;
+    public Text livesText;
+    public Text winText;
 
     private int scoreValue = 0;
+    private int lives;
+    
+
+   
 
     // Start is called before the first frame update
     void Start()
     {
+        
+        lives = 3;
         rd2d = GetComponent<Rigidbody2D>();
         score.text = scoreValue.ToString();
+        livesText.text = "Lives: "+ lives.ToString();
+        SetLivesText ();
+        winText.text = "";
+        
     }
 
     // Update is called once per frame
@@ -27,13 +39,20 @@ public class PlayerScript : MonoBehaviour
         float vertMovement = Input.GetAxis("Vertical");
         rd2d.AddForce(new Vector2(hozMovement * speed, vertMovement * speed));
     }
-
+void SetLivesText()
+    {
+        livesText.text = "lives: " + lives.ToString();
+        if (lives <= 0)
+        {
+            
+        }
+    }
     void Update()
     {
-if (Input.GetKey("escape"))
-{
-Application.Quit();
-}
+        if (Input.GetKey("escape"))
+        {
+            Application.Quit();
+        }
 
     }
 
@@ -44,6 +63,32 @@ Application.Quit();
             scoreValue += 1;
             score.text = scoreValue.ToString();
             Destroy(collision.collider.gameObject);
+            
+            if( scoreValue == 4)
+            {
+                transform.position = new Vector2(371.4f, 6.4f);
+                lives = 3;
+                livesText.text = "lives: " + lives.ToString();
+                
+            }
+            if( scoreValue == 8)
+            {
+                winText.text = "you win game made by Jacob Boone!";
+            }
+        }
+
+        
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            collision.gameObject.SetActive(false);
+            lives = lives - 1;
+            SetLivesText();
+
+            if(lives <= 0)
+            {
+                winText.text = "You lost the game made by jacob Boone";
+                Destroy(this);
+            }
         }
 
     }
@@ -54,8 +99,9 @@ Application.Quit();
         {
             if (Input.GetKey(KeyCode.W))
             {
-                rd2d.AddForce(new Vector2(0, 3), ForceMode2D.Impulse); //the 3 in this line of code is the player's "jumpforce," and you change that number to get different jump behaviors.  You can also create a public variable for it and then edit it in the inspector.
+                rd2d.AddForce(new Vector2(0, 5), ForceMode2D.Impulse); //the 3 in this line of code is the player's "jumpforce," and you change that number to get different jump behaviors.  You can also create a public variable for it and then edit it in the inspector.
             }
         }
     }
+    
 }
